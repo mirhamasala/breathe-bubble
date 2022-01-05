@@ -20,3 +20,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 - [Three.js with React Hooks](https://javascript.plainenglish.io/three-js-with-react-functional-component-9e66e08dbeac)
 - [Integrating Three.js With React Easily Without Wrapper Libraries](https://therohanbhatia.com/blog/integrating-three-js-with-react/)
+- [Scene, Camera and Renderer](https://sbcode.net/threejs/scene-camera-renderer/) (Idea to extract the canvas)

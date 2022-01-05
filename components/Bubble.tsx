@@ -20,38 +20,42 @@ export default function Bubble() {
       75,
       canvasRefValue.clientWidth / canvasRefValue.clientHeight,
       0.1,
-      1000
+      10
     );
+
     scene.background = new THREE.Color(colors["slate-900"]);
+    camera.position.z = 5;
 
     const renderer = new THREE.WebGLRenderer({ canvas: canvasRefValue });
     renderer.setSize(canvasRefValue.clientWidth, canvasRefValue.clientHeight);
 
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const geometry = new THREE.BoxGeometry();
     const material = new THREE.MeshBasicMaterial({
       color: colors["slate-300"],
+      wireframe: true,
     });
+
     const cube = new THREE.Mesh(geometry, material);
-
     scene.add(cube);
-    camera.position.z = 5;
 
-    const animate = function () {
+    function animate() {
       requestAnimationFrame(animate);
+
       cube.rotation.x += 0.01;
       cube.rotation.y += 0.01;
+
       renderer.render(scene, camera);
-    };
+    }
 
     animate();
 
-    const onWindowResize = function () {
+    function onWindowResize() {
       if (!canvasRefValue) return;
 
       camera.aspect = canvasRefValue.clientWidth / canvasRefValue.clientHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(canvasRefValue.clientWidth, canvasRefValue.clientHeight);
-    };
+    }
 
     window.addEventListener("resize", onWindowResize, false);
 

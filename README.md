@@ -15,3 +15,8 @@ yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Resources
+
+- [Three.js with React Hooks](https://javascript.plainenglish.io/three-js-with-react-functional-component-9e66e08dbeac)
+- [Integrating Three.js With React Easily Without Wrapper Libraries](https://therohanbhatia.com/blog/integrating-three-js-with-react/)

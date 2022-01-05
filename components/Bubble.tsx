@@ -2,34 +2,30 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 export default function Bubble() {
-  const sceneRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    if (!sceneRef.current) return;
+    if (!canvasRef.current) return;
 
     const colors = {
       "slate-300": 0xc9d5e2,
       "slate-900": 0x0d172c,
     };
 
-    let sceneRefValue: HTMLDivElement | null = null;
-    sceneRefValue = sceneRef.current;
-
-    const width = sceneRefValue.clientWidth;
+    let canvasRefValue = null as HTMLCanvasElement | null;
+    canvasRefValue = canvasRef.current;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
-      sceneRefValue.clientWidth / sceneRefValue.clientHeight,
+      canvasRefValue.clientWidth / canvasRefValue.clientHeight,
       0.1,
       1000
     );
-    const renderer = new THREE.WebGLRenderer();
-
     scene.background = new THREE.Color(colors["slate-900"]);
-    renderer.setSize(sceneRefValue.clientWidth, sceneRefValue.clientHeight);
 
-    sceneRefValue.appendChild(renderer.domElement);
+    const renderer = new THREE.WebGLRenderer({ canvas: canvasRefValue });
+    renderer.setSize(canvasRefValue.clientWidth, canvasRefValue.clientHeight);
 
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshBasicMaterial({
@@ -47,25 +43,20 @@ export default function Bubble() {
       renderer.render(scene, camera);
     };
 
-    const onWindowResize = function () {
-      if (!sceneRefValue) return;
+    animate();
 
-      camera.aspect = sceneRefValue.clientWidth / sceneRefValue.clientHeight;
+    const onWindowResize = function () {
+      if (!canvasRefValue) return;
+
+      camera.aspect = canvasRefValue.clientWidth / canvasRefValue.clientHeight;
       camera.updateProjectionMatrix();
-      renderer.setSize(sceneRefValue.clientWidth, sceneRefValue.clientHeight);
+      renderer.setSize(canvasRefValue.clientWidth, canvasRefValue.clientHeight);
     };
 
     window.addEventListener("resize", onWindowResize, false);
 
-    animate();
+    return () => window.removeEventListener("resize", onWindowResize);
+  }, [canvasRef]);
 
-    return () => {
-      if (sceneRefValue) {
-        sceneRefValue.removeChild(renderer.domElement);
-        window.removeEventListener("resize", onWindowResize);
-      }
-    };
-  }, [sceneRef]);
-
-  return <div ref={sceneRef} className="w-full h-full" />;
+  return <canvas ref={canvasRef} className="w-full h-full" />;
 }

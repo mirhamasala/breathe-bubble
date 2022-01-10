@@ -1,12 +1,14 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import Stats from "three/examples/jsm/libs/stats.module";
 
 export default function Bubble() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (!canvasRef.current || !statsRef.current) return;
 
     const colors = {
       "slate-300": 0xc9d5e2,
@@ -41,6 +43,9 @@ export default function Bubble() {
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
 
+    const stats = Stats();
+    statsRef.current.appendChild(stats.dom);
+
     function animate() {
       requestAnimationFrame(animate);
 
@@ -48,6 +53,8 @@ export default function Bubble() {
       cube.rotation.y += 0.01;
 
       renderer.render(scene, camera);
+
+      stats.update();
     }
 
     animate();
@@ -65,5 +72,10 @@ export default function Bubble() {
     return () => window.removeEventListener("resize", onWindowResize);
   }, [canvasRef]);
 
-  return <canvas ref={canvasRef} className="w-full h-full cursor-pointer" />;
+  return (
+    <>
+      <div ref={statsRef} />
+      <canvas ref={canvasRef} className="w-full h-full cursor-pointer" />
+    </>
+  );
 }

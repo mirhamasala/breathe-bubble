@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export default function Bubble() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -17,10 +18,10 @@ export default function Bubble() {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
-      75,
+      50,
       canvasRefValue.clientWidth / canvasRefValue.clientHeight,
       0.1,
-      10
+      1000
     );
 
     scene.background = new THREE.Color(colors["slate-900"]);
@@ -28,6 +29,8 @@ export default function Bubble() {
 
     const renderer = new THREE.WebGLRenderer({ canvas: canvasRefValue });
     renderer.setSize(canvasRefValue.clientWidth, canvasRefValue.clientHeight);
+
+    new OrbitControls(camera, renderer.domElement);
 
     const geometry = new THREE.BoxGeometry();
     const material = new THREE.MeshBasicMaterial({
@@ -62,5 +65,5 @@ export default function Bubble() {
     return () => window.removeEventListener("resize", onWindowResize);
   }, [canvasRef]);
 
-  return <canvas ref={canvasRef} className="w-full h-full" />;
+  return <canvas ref={canvasRef} className="w-full h-full cursor-pointer" />;
 }

@@ -4,7 +4,7 @@ import Bubble from "../components/Bubble";
 
 const Home: NextPage = () => {
   return (
-    <div className="flex flex-col h-screen bg-slate-900">
+    <div className="flex flex-col h-screen bg-zinc-900">
       <Head>
         <title>Breathe Bubble</title>
         <meta name="description" content="Breathe bubble" />

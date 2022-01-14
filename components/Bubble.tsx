@@ -7,50 +7,60 @@ export default function Bubble() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
 
+  const colors = {
+    "zinc-900": 0x18181b,
+  };
+
   useEffect(() => {
     if (!canvasRef.current || !statsRef.current) return;
-
-    const colors = {
-      "slate-300": 0xc9d5e2,
-      "slate-900": 0x0d172c,
-    };
 
     let canvasRefValue = null as HTMLCanvasElement | null;
     canvasRefValue = canvasRef.current;
 
+    // scene
     const scene = new THREE.Scene();
+    scene.background = new THREE.Color(colors["zinc-900"]);
+
+    // camera
     const camera = new THREE.PerspectiveCamera(
-      50,
-      canvasRefValue.clientWidth / canvasRefValue.clientHeight,
-      0.1,
+      40,
+      window.innerWidth / window.innerHeight,
+      1,
       1000
     );
+    camera.position.z = 7;
 
-    scene.background = new THREE.Color(colors["slate-900"]);
-    camera.position.z = 5;
+    // renderer
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvasRefValue,
+      antialias: true,
+    });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
-    const renderer = new THREE.WebGLRenderer({ canvas: canvasRefValue });
-    renderer.setSize(canvasRefValue.clientWidth, canvasRefValue.clientHeight);
-
+    // controls
     new OrbitControls(camera, renderer.domElement);
 
-    const geometry = new THREE.BoxGeometry();
-    const material = new THREE.MeshBasicMaterial({
-      color: colors["slate-300"],
+    const geometry = new THREE.SphereGeometry();
+
+    // material
+    const material = new THREE.MeshNormalMaterial({
       wireframe: true,
     });
 
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
+    // mesh
+    const bubble = new THREE.Mesh(geometry, material);
+    scene.add(bubble);
 
+    // stats
     const stats = Stats();
     statsRef.current.appendChild(stats.dom);
 
     function animate() {
       requestAnimationFrame(animate);
 
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
+      bubble.rotation.x += 0.005;
+      bubble.rotation.y += 0.005;
 
       renderer.render(scene, camera);
 
@@ -60,22 +70,21 @@ export default function Bubble() {
     animate();
 
     function onWindowResize() {
-      if (!canvasRefValue) return;
-
-      camera.aspect = canvasRefValue.clientWidth / canvasRefValue.clientHeight;
+      camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
-      renderer.setSize(canvasRefValue.clientWidth, canvasRefValue.clientHeight);
+
+      renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
     window.addEventListener("resize", onWindowResize, false);
 
     return () => window.removeEventListener("resize", onWindowResize);
-  }, [canvasRef]);
+  });
 
   return (
     <>
       <div ref={statsRef} />
-      <canvas ref={canvasRef} className="w-full h-full cursor-pointer" />
+      <canvas ref={canvasRef} />
     </>
   );
 }

@@ -56,13 +56,29 @@ export default function Bubble() {
     const stats = Stats();
     statsRef.current.appendChild(stats.dom);
 
-    function animate() {
-      requestAnimationFrame(animate);
+    // clock
+    let clock = new THREE.Clock();
 
-      bubble.rotation.x += 0.005;
-      bubble.rotation.y += 0.005;
+    function animate() {
+      let t = clock.getElapsedTime();
+
+      if (t <= 4.0) {
+        // Grow
+        bubble.scale.x = 1.0 + t * (0.2 / 4.0);
+        bubble.scale.y = 1.0 + t * (0.2 / 4.0);
+        bubble.scale.z = 1.0 + t * (0.2 / 4.0);
+      } else if (t > 4.0 && t <= 8.0) {
+        // Shrink
+        bubble.scale.x = 1.2 - t * (0.2 / 4.0);
+        bubble.scale.y = 1.2 - t * (0.2 / 4.0);
+        bubble.scale.z = 1.2 - t * (0.2 / 4.0);
+      } else {
+        clock = new THREE.Clock();
+      }
 
       renderer.render(scene, camera);
+
+      requestAnimationFrame(animate);
 
       stats.update();
     }

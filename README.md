@@ -1,6 +1,6 @@
 # ☁️ Breathe Bubble
 
-🔗 [breathe-bubble.vercel.app](breathe-bubble.vercel.app)
+🔗 [breathe-bubble.vercel.app](https://breathe-bubble.vercel.app/)
 
 ## Getting Started
 

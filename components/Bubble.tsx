@@ -62,19 +62,8 @@ export default function Bubble() {
     function animate() {
       let t = clock.getElapsedTime();
 
-      if (t <= 4.0) {
-        // Grow
-        bubble.scale.x = 1.0 + t * (0.2 / 4.0);
-        bubble.scale.y = 1.0 + t * (0.2 / 4.0);
-        bubble.scale.z = 1.0 + t * (0.2 / 4.0);
-      } else if (t > 4.0 && t <= 8.0) {
-        // Shrink
-        bubble.scale.x = 1.2 - t * (0.2 / 4.0);
-        bubble.scale.y = 1.2 - t * (0.2 / 4.0);
-        bubble.scale.z = 1.2 - t * (0.2 / 4.0);
-      } else {
-        clock = new THREE.Clock();
-      }
+      const scale = 0.8 + Math.sin(t) * 0.5;
+      bubble.scale.set(scale, scale, scale);
 
       renderer.render(scene, camera);
 

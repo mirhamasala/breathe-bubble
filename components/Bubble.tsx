@@ -1,9 +1,14 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Stats from "three/examples/jsm/libs/stats.module";
+import { defaultMaterial } from "./SelectMaterial";
+
+import SelectMaterial from "./SelectMaterial";
 
 export default function Bubble() {
+  const [materialType, setMaterialType] = useState(defaultMaterial);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
 
@@ -17,11 +22,9 @@ export default function Bubble() {
     let canvasRefValue = null as HTMLCanvasElement | null;
     canvasRefValue = canvasRef.current;
 
-    // scene
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(colors["zinc-900"]);
 
-    // camera
     const camera = new THREE.PerspectiveCamera(
       40,
       window.innerWidth / window.innerHeight,
@@ -30,7 +33,6 @@ export default function Bubble() {
     );
     camera.position.z = 7;
 
-    // renderer
     const renderer = new THREE.WebGLRenderer({
       canvas: canvasRefValue,
       antialias: true,
@@ -38,25 +40,16 @@ export default function Bubble() {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // controls
     new OrbitControls(camera, renderer.domElement);
-
     const geometry = new THREE.SphereGeometry();
 
-    // material
-    const material = new THREE.MeshNormalMaterial({
-      wireframe: true,
-    });
-
-    // mesh
+    const material = new THREE[materialType]({ wireframe: true });
     const bubble = new THREE.Mesh(geometry, material);
     scene.add(bubble);
 
-    // stats
     const stats = Stats();
     statsRef.current.appendChild(stats.dom);
 
-    // clock
     let clock = new THREE.Clock();
 
     function animate() {
@@ -86,8 +79,11 @@ export default function Bubble() {
     return () => window.removeEventListener("resize", onWindowResize);
   });
 
+  const onMaterialChange = (type: string) => setMaterialType(type);
+
   return (
     <>
+      <SelectMaterial onMaterialChange={onMaterialChange} />
       <div ref={statsRef} />
       <canvas ref={canvasRef} />
     </>

@@ -59,10 +59,32 @@ export default function Bubble() {
     // clock
     let clock = new THREE.Clock();
 
-    function animate() {
-      let t = clock.getElapsedTime();
+    const inDuration = 4;
+    const outDuration = 8;
+    const pause = 0;
 
-      const scale = 0.8 + Math.sin(t) * 0.5;
+    const outStartTime = inDuration + pause;
+    const totalEndTime = inDuration + pause + outDuration;
+
+    let t = 0;
+    let scale = 1;
+    const ease = (x: number) => x * x;
+
+    function animate() {
+      t += clock.getDelta();
+
+      if (t < inDuration) {
+        const factor = t / inDuration;
+        scale = 1 + ease(factor);
+      } else if (t < outStartTime) {
+        scale = 2;
+      } else if (t < totalEndTime) {
+        const factor = (t - outStartTime) / (totalEndTime - outStartTime);
+        scale = 2 - ease(factor);
+      } else {
+        t = 0;
+      }
+
       bubble.scale.set(scale, scale, scale);
 
       renderer.render(scene, camera);
